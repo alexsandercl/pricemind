@@ -5,7 +5,7 @@ const path = require("path");
 
 const authRoutes = require("./routes/authRoutes");
 const aiRoutes = require("./routes/aiRoutes");
-const profileRoutes = require("./routes/profileRoutes");
+// const profileRoutes = require("./routes/profileRoutes"); // ROTA DE PERFIL DESATIVADA TEMPORARIAMENTE PARA REFACTOR
 const preferencesRoutes = require("./routes/preferencesroutes");
 const statsRoutes = require("./routes/statsRoutes");
 const onboardingRoutes = require("./routes/onboardingRoutes");
