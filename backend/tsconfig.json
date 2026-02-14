@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+
+    "strict": false,
+    "skipLibCheck": true,
+
+    "allowJs": true,
+    "checkJs": false,
+
+    "types": ["node"],
+    "noEmit": true
+  },
+  "include": ["src/**/*", "make-admin.js"],
+  "exclude": ["node_modules", "dist"]
+}

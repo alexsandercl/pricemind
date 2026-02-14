@@ -1,0 +1,437 @@
+// ===============================
+// PRISMA SCHEMA — PriceMind
+// ===============================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===============================
+// MODELS EXISTENTES
+// ===============================
+
+model UserProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  name      String?
+  bio       String?
+  avatarUrl String?
+  plan      String   @default("free")
+  isAdmin   Boolean  @default(false)
+  role      String   @default("user")
+     
+  onboardingCompleted Boolean  @default(false)
+  objetivo            String?
+  tipoNegocio         String?
+  experiencia         String?
+  faixaPreco          String?
+     
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserPreferences {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  theme     String   @default("dark")
+  language  String   @default("pt-BR")
+  emailNotifications Boolean @default(true)
+  pushNotifications  Boolean @default(true)
+   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserStats {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+   
+  totalRequests Int      @default(0)
+  lastAccessAt  DateTime?
+   
+  monthlyRequests Int     @default(0)
+  lastResetAt     DateTime @default(now())
+   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Analysis {
+  id          String   @id @default(uuid())
+  userId      String
+   
+  productName String
+  price       Float
+  category    String?
+  description String?
+  
+  // 🆕 NOVOS CAMPOS ADICIONADOS
+  type        String?  // 'basic', 'traffic-roi', 'competitor', etc
+  
+  // Dados do produto (JSON flexível para diferentes tipos de análise)
+  productData Json?
+  
+  // Resultados da análise de preço
+  suggestedPrice  Float?
+  priceRangeMin   Float?
+  priceRangeMax   Float?
+  justification   String?  @db.Text
+  recommendations Json?
+     
+  aiResponse  String   @db.Text
+  isValid     Boolean?
+     
+  createdAt   DateTime @default(now())
+   
+  @@index([userId, createdAt])
+  @@index([type])
+}
+
+model PremiumAnalysis {
+  id          String   @id @default(uuid())
+  userId      String
+     
+  type        String
+     
+  fileName    String?
+  fileUrl     String?
+  link        String?
+     
+  productName String?
+  price       Float?
+  category    String?
+  description String?  @db.Text
+     
+  aiResponse  String   @db.Text
+     
+  extractedText String? @db.Text
+  metadata    Json?
+     
+  createdAt   DateTime @default(now())
+   
+  @@index([userId, type, createdAt])
+}
+
+model ProfitCalculation {
+  id          String   @id @default(uuid())
+  userId      String
+     
+  productName String
+     
+  sellingPrice    Float
+  productionCost  Float
+  platformFee     Float   @default(0)
+  taxes           Float   @default(0)
+  otherCosts      Float   @default(0)
+     
+  totalCost       Float
+  profitAmount    Float
+  profitMargin    Float
+  netProfit       Float
+     
+  aiSuggestion    String? @db.Text
+     
+  createdAt   DateTime @default(now())
+   
+  @@index([userId, createdAt])
+}
+
+model AdminLog {
+  id        String   @id @default(uuid())
+  adminId   String
+  targetId  String?
+  action    String
+  details   Json?
+     
+  createdAt DateTime @default(now())
+   
+  @@index([adminId, createdAt])
+  @@index([action, createdAt])
+}
+
+// ===============================
+// BUSINESS FEATURES
+// ===============================
+
+model PriceComparison {
+  id          String   @id @default(uuid())
+  userId      String
+  
+  comparisonName String
+  
+  myProduct      Json
+  competitors    Json
+  
+  aiAnalysis     String  @db.Text
+  recommendation String  @db.Text
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([userId, createdAt])
+}
+
+model PriceSimulation {
+  id          String   @id @default(uuid())
+  userId      String
+  
+  productName String
+  basePrice   Float
+  
+  scenarios   Json
+  aiAnalysis  String  @db.Text
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([userId, createdAt])
+}
+
+model ChatConversation {
+  id          String   @id @default(uuid())
+  userId      String
+  
+  title       String   @default("Nova conversa")
+  messages    Json
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId, createdAt])
+}
+
+model BatchAnalysis {
+  id          String   @id @default(uuid())
+  userId      String
+  
+  fileName    String
+  fileUrl     String
+  
+  totalProducts Int
+  processed     Int     @default(0)
+  status        String  @default("processing")
+  
+  results       Json?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId, createdAt])
+}
+
+model PriceMonitor {
+  id                String   @id @default(uuid())
+  userId            String
+  
+  productName       String
+  targetUrl         String
+  currentPrice      Float
+  lastPrice         Float?
+  initialPrice      Float
+  frequency         String   @default("daily")
+  alertThreshold    Float    @default(5.0)
+  isActive          Boolean  @default(true)
+  lastChecked       DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  history           PriceHistory[]
+  
+  @@index([userId])
+  @@index([isActive])
+}
+
+model PriceHistory {
+  id            String       @id @default(uuid())
+  monitorId     String
+  price         Float
+  priceChange   Float?
+  checkedAt     DateTime     @default(now())
+  
+  monitor       PriceMonitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  
+  @@index([monitorId])
+  @@index([checkedAt])
+}
+
+// ===============================
+// INTEGRAÇÕES E-COMMERCE (FASE 2)
+// ===============================
+
+model StoreIntegration {
+  id          String   @id @default(uuid())
+  userId      String
+  
+  platform    String
+  storeName   String
+  storeUrl    String
+  
+  apiKey      String
+  apiSecret   String?
+  accessToken String?
+  
+  isActive    Boolean  @default(true)
+  lastSync    DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  products    SyncedProduct[]
+  
+  @@index([userId])
+  @@index([platform])
+}
+
+model SyncedProduct {
+  id             String   @id @default(uuid())
+  integrationId  String
+  integration    StoreIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  
+  externalId     String
+  productName    String
+  sku            String?
+  
+  currentPrice   Float
+  suggestedPrice Float?
+  
+  lastSynced     DateTime?
+  autoUpdate     Boolean  @default(false)
+  
+  imageUrl       String?
+  productUrl     String?
+  metadata       Json?
+  
+  syncLogs       SyncLog[]
+  
+  @@index([integrationId])
+  @@index([externalId])
+}
+
+model SyncLog {
+  id              String   @id @default(uuid())
+  productId       String
+  product         SyncedProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  action          String
+  oldPrice        Float?
+  newPrice        Float?
+  status          String
+  errorMessage    String?
+  
+  timestamp       DateTime @default(now())
+  
+  @@index([productId])
+  @@index([timestamp])
+}
+
+// ===============================
+// SISTEMA DE SUPORTE (FASE 3)
+// ===============================
+
+model SupportTicket {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  userName    String
+  userEmail   String
+  
+  subject     String
+  category    String   @default("general")
+  priority    String   @default("medium")
+  status      String   @default("open")
+  
+  isRead      Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  closedAt    DateTime?
+  
+  messages    SupportMessage[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([priority])
+  @@map("support_tickets")
+}
+
+model SupportMessage {
+  id          Int      @id @default(autoincrement())
+  ticketId    Int
+  
+  senderId    String
+  senderName  String
+  senderType  String
+  
+  message     String   @db.Text
+  
+  createdAt   DateTime @default(now())
+  
+  ticket      SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([createdAt])
+  @@map("support_messages")
+}
+
+// ===============================
+// SISTEMA DE NOTIFICAÇÕES (FASE 3)
+// ===============================
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  
+  type      String   @default("info")
+  title     String
+  message   String   @db.Text
+  link      String?
+  
+  read      Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ===============================
+// 🆕 SISTEMA DE ASSINATURAS KIWIFY
+// ===============================
+
+model Subscription {
+  id        String   @id @default(uuid())
+  userId    String
+  
+  plan      String   // 'free', 'pro', 'business'
+  status    String   @default("pending") // 'active', 'cancelled', 'expired', 'pending'
+  
+  // Dados do Kiwify
+  kiwifyOrderId     String   @unique
+  kiwifyProductId   String
+  kiwifyCustomerId  String
+  
+  // Financeiro
+  amount          Float    // Valor em centavos (9700 = R$ 97,00)
+  currency        String   @default("BRL")
+  paymentMethod   String   // 'credit_card', 'pix', 'boleto'
+  
+  // Datas
+  startDate       DateTime @default(now())
+  endDate         DateTime
+  nextBillingDate DateTime?
+  cancelledAt     DateTime?
+  
+  // Webhook data (JSON completo do webhook)
+  webhookData     Json?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId, status])
+  @@index([kiwifyOrderId])
+  @@index([endDate])
+}

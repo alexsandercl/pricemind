@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://pricemind.com.br/</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Pricing -->
+  <url>
+    <loc>https://pricemind.com.br/pricing</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Features -->
+  <url>
+    <loc>https://pricemind.com.br/features</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- About -->
+  <url>
+    <loc>https://pricemind.com.br/about</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://pricemind.com.br/contact</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- FAQ -->
+  <url>
+    <loc>https://pricemind.com.br/faq</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Blog (se tiver) -->
+  <!-- <url>
+    <loc>https://pricemind.com.br/blog</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url> -->
+
+  <!-- Login -->
+  <url>
+    <loc>https://pricemind.com.br/login</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Register -->
+  <url>
+    <loc>https://pricemind.com.br/register</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+</urlset>
+
+<!-- 
+============================================
+NOTAS:
+============================================
+
+1. Coloque este arquivo em: frontend/public/sitemap.xml
+2. Acesse em: https://pricemind.com.br/sitemap.xml
+3. Submeta no Google Search Console
+4. Atualize <lastmod> quando fizer mudanças
+5. Prioridades:
+   - 1.0 = Mais importante
+   - 0.0 = Menos importante
+6. Change frequency:
+   - always: Muda sempre
+   - hourly: Muda a cada hora
+   - daily: Muda diariamente
+   - weekly: Muda semanalmente
+   - monthly: Muda mensalmente
+   - yearly: Muda anualmente
+   - never: Nunca muda
+
+7. Para gerar automaticamente:
+   - Use: npm install sitemap
+   - Ou: https://www.xml-sitemaps.com/
+-->

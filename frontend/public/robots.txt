@@ -1,0 +1,57 @@
+# ============================================
+# PRICEMIND - ROBOTS.TXT
+# ============================================
+# Este arquivo diz aos bots de busca o que podem indexar
+
+# Permitir todos os bots
+User-agent: *
+Allow: /
+
+# Bloquear áreas privadas
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /admin/
+Disallow: /api/
+
+# Bloquear assets desnecessários
+Disallow: /*.json$
+Disallow: /*.xml$
+
+# Permitir páginas importantes
+Allow: /
+Allow: /pricing
+Allow: /about
+Allow: /contact
+Allow: /features
+Allow: /faq
+
+# Sitemap
+Sitemap: https://pricemind.com.br/sitemap.xml
+
+# Bots específicos
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Bloquear bots ruins
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+# ============================================
+# NOTAS:
+# ============================================
+# 1. Coloque este arquivo em: frontend/public/robots.txt
+# 2. Acesse em: https://seusite.com/robots.txt
+# 3. Teste no Google Search Console
+# 4. Atualize a URL do Sitemap acima
