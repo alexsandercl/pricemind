@@ -73,7 +73,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
-app.use("/api/profile", profileRoutes);
+// app.use("/api/profile", profileRoutes); // ROTA DE PERFIL DESATIVADA TEMPORARIAMENTE PARA REFACTOR
 app.use("/api/preferences", preferencesRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/onboarding", onboardingRoutes);
