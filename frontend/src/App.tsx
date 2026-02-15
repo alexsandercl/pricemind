@@ -85,7 +85,7 @@ export default function App() {
   const [initialLoading, setInitialLoading] = useState(true);
   const [userRole, setUserRole] = useState<string>("user");
   const [showPassword, setShowPassword] = useState(false);
-  const [checkoutPlan, setCheckoutPlan] = useState<string>("");
+  const [checkoutPlan, setCheckoutPlan] = useState<"starter" | "pro" | "business">("pro");
 
   useEffect(() => {
     async function checkAuth() {
@@ -249,7 +249,6 @@ export default function App() {
     return (
       <Register
         onSuccess={handleRegisterSuccess}
-        onBack={() => setScreen("landing")}
       />
     );
   }
@@ -282,7 +281,7 @@ export default function App() {
     return (
       <Pricing 
         onBack={() => setScreen("home")}
-        onCheckout={(plan: string) => {
+        onCheckout={(plan) => {
           setCheckoutPlan(plan);
           setScreen("checkout");
         }}
@@ -302,7 +301,8 @@ export default function App() {
   if (screen === "success") {
     return (
       <Success 
-        onContinue={() => setScreen("home")}
+        onGoToDashboard={() => setScreen("home")}
+        onGoToHome={() => setScreen("landing")}
       />
     );
   }
@@ -338,16 +338,18 @@ export default function App() {
   }
 
   if (screen === "dashboard") {
-    return <Dashboard onBack={() => setScreen("home")} />;
+    return <Dashboard onBack={() => setScreen("home")} onLogout={function (): void {
+      throw new Error("Function not implemented.");
+    } } />;
   }
 
   if (screen === "profile") {
     return (
       <Profile 
         onBack={() => setScreen("home")}
-        onThemeChange={handleThemeChange} onLogout={function (): void {
-          throw new Error("Function not implemented.");
-        } }      />
+        onThemeChange={handleThemeChange}
+        onLogout={handleLogout}
+      />
     );
   }
 
@@ -411,12 +413,12 @@ export default function App() {
   }
 
   if (screen === "integrations") {
-  return <Integrations onBack={() => setScreen("home")} />;
-}
+    return <Integrations onBack={() => setScreen("home")} />;
+  }
 
-if (screen === "traffic-roi") {
-  return <TrafficROICalculator onBack={() => setScreen("home")} />;
-}
+  if (screen === "traffic-roi") {
+    return <TrafficROICalculator onBack={() => setScreen("home")} />;
+  }
 
   // ADMIN
   if (screen === "admin") {

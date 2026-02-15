@@ -3,14 +3,18 @@ import { Check, Zap, Crown, Star, Gift, ArrowLeft, Loader2, CheckCircle, Shield,
 import { api } from '../services/api';
 import Toast, { useToast, ToastContainer, CheckoutToasts } from '../components/ui/Toast';
 
+// ✅ ÚNICA MUDANÇA: onSelectPlan → onCheckout
 interface PricingProps {
-  onSelectPlan: (plan: 'starter' | 'pro' | 'business') => void;
+  onCheckout: (plan: 'starter' | 'pro' | 'business') => void;
   onBack: () => void;
 }
 
 type ButtonState = 'idle' | 'loading' | 'redirecting' | 'error';
 
-const Pricing: React.FC<PricingProps> = ({ onSelectPlan, onBack }) => {
+const Pricing: React.FC<PricingProps> = ({ onCheckout, onBack }) => {
+  // ✅ Alias para manter compatibilidade com código existente
+  const onSelectPlan = onCheckout;
+  
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [buttonState, setButtonState] = useState<Record<string, ButtonState>>({
     starter: 'idle',
