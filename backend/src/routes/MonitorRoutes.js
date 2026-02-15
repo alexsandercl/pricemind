@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
-const monitorController = require('../controllers/monitor.controller');
+const monitorController = require('../controllers/Monitor.controller');
 
 // 📋 Criar monitoramento
 router.post('/', authMiddleware, monitorController.createMonitor);

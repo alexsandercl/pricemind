@@ -3,22 +3,26 @@ const cors = require("cors");
 const helmet = require("helmet");
 const path = require("path");
 
+// =============================================
+// IMPORTS DE ROTAS (CASE SENSITIVE CORRIGIDO!)
+// =============================================
+
 const authRoutes = require("./routes/authRoutes");
 const aiRoutes = require("./routes/aiRoutes");
-const profileRoutes = require("./routes/profileRoutes"); 
-const preferencesRoutes = require("./routes/preferencesroutes");
+const profileRoutes = require("./routes/profileRoutes");
+const preferencesRoutes = require("./routes/preferencesroutes"); // ← Minúsculo (nome do arquivo)
 const statsRoutes = require("./routes/statsRoutes");
 const onboardingRoutes = require("./routes/onboardingRoutes");
-const premiumRoutes = require("./routes/premiumRoutes")
+const premiumRoutes = require("./routes/premiumRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const reportsRoutes = require('./routes/reportsRoutes');
 const batchRoutes = require('./routes/batchRoutes');
-const monitorRoutes = require('./routes/monitorRoutes');
+const monitorRoutes = require('./routes/MonitorRoutes'); // ← MAIÚSCULO corrigido!
 const trafficRoiRoutes = require("./routes/trafficRoiRoutes");
 const checkoutRoutes = require("./routes/checkout.routes");
-const supportRoutes = require("./routes/supportRoutes");
+const supportRoutes = require("./routes/SupportRoutes"); // ← MAIÚSCULO corrigido!
 
-// 🆕 NOVAS ROTAS PRO
+// NOVAS ROTAS PRO
 const breakEvenRoutes = require("./routes/breakEvenRoutes");
 const discountSimulatorRoutes = require("./routes/discountSimulatorRoutes");
 
@@ -37,7 +41,7 @@ app.use(helmet({
 // CORS CONFIGURADO CORRETAMENTE
 app.use(
   cors({
-    origin: "http://localhost:5173", // porta do seu Vite/React
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -54,12 +58,10 @@ app.use(
   "/uploads",
   express.static(path.join(__dirname, "..", "uploads"), {
     setHeaders: (res, filePath) => {
-      // Headers CORS para imagens
-      res.set("Access-Control-Allow-Origin", "http://localhost:5173");
+      res.set("Access-Control-Allow-Origin", process.env.FRONTEND_URL || "http://localhost:5173");
       res.set("Access-Control-Allow-Credentials", "true");
       res.set("Cross-Origin-Resource-Policy", "cross-origin");
 
-      // Sem cache para avatars
       if (filePath.includes("avatars")) {
         res.set("Cache-Control", "public, max-age=0");
       }
@@ -85,11 +87,12 @@ app.use('/api/monitor', monitorRoutes);
 app.use("/api/traffic-roi", trafficRoiRoutes);
 app.use("/api/support", supportRoutes);
 
-// 🆕 NOVAS ROTAS PRO
+// NOVAS ROTAS PRO
 app.use("/api/break-even", breakEvenRoutes);
 app.use("/api/discount-simulator", discountSimulatorRoutes);
 
 app.use("/api/checkout", checkoutRoutes);
+
 /* =========================
    HEALTH
 ========================= */

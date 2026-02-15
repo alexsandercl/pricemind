@@ -41,8 +41,8 @@ router.get('/url/:plan', async (req, res) => {
       plan,
       price: {
         starter: 'R$ 27,00',
-        pro: 'R$ 67,00',
-        business: 'R$ 247,00'
+        pro: 'R$ 48,50',
+        business: 'R$ 97,00'
       }[plan],
       debug: true
     });
