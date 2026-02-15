@@ -5,7 +5,7 @@ const path = require("path");
 
 const authRoutes = require("./routes/authRoutes");
 const aiRoutes = require("./routes/aiRoutes");
-// const profileRoutes = require("./routes/profileRoutes"); // ROTA DE PERFIL DESATIVADA TEMPORARIAMENTE PARA REFACTOR
+const profileRoutes = require("./routes/profileRoutes"); 
 const preferencesRoutes = require("./routes/preferencesroutes");
 const statsRoutes = require("./routes/statsRoutes");
 const onboardingRoutes = require("./routes/onboardingRoutes");
@@ -73,7 +73,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
-// app.use("/api/profile", profileRoutes); // ROTA DE PERFIL DESATIVADA TEMPORARIAMENTE PARA REFACTOR
+app.use("/api/profile", profileRoutes);
 app.use("/api/preferences", preferencesRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/onboarding", onboardingRoutes);
