@@ -2,11 +2,48 @@ const nodemailer = require('nodemailer');
 
 console.log('📧 Carregando emailConfig.js...');
 
+// 🔥 VERIFICAR SE EMAIL ESTÁ HABILITADO
+const EMAIL_ENABLED = process.env.EMAIL_ENABLED !== 'false';
+
+console.log(`📧 EMAIL_ENABLED: ${EMAIL_ENABLED}`);
+
+// Se email estiver desabilitado, retornar funções dummy
+if (!EMAIL_ENABLED) {
+  console.log('⚠️ Email desabilitado via variável de ambiente EMAIL_ENABLED=false');
+  console.log('✅ Todas as funções de email retornarão sucesso sem enviar nada');
+  
+  module.exports = {
+    transporter: null,
+    sendEmail: async () => {
+      console.log('📧 [SIMULADO] Email não enviado (EMAIL_ENABLED=false)');
+      return { messageId: 'simulated-id' };
+    },
+    sendWelcomeEmail: async (email, name) => {
+      console.log(`📧 [SIMULADO] Email de boas-vindas para ${name} (${email})`);
+      return { messageId: 'simulated-welcome-id' };
+    },
+    sendPasswordResetEmail: async (email, name, resetToken) => {
+      console.log(`📧 [SIMULADO] Email de recuperação para ${name} (${email})`);
+      return { messageId: 'simulated-reset-id' };
+    },
+    verifyEmailConfig: async () => {
+      console.log('✅ [SIMULADO] Email config OK (mas desabilitado)');
+      return true;
+    }
+  };
+  
+  return; // Não executa o resto do código
+}
+
+// ============================================= 
+// CÓDIGO NORMAL (quando EMAIL_ENABLED=true)
+// =============================================
+
 /**
  * 📧 CONFIGURAÇÃO DE EMAIL - NODEMAILER
  */
 
-// Criar transporter (SEM "er" no final!)
+// Criar transporter
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: parseInt(process.env.EMAIL_PORT),
