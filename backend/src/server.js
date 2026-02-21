@@ -1,6 +1,6 @@
 require("dotenv").config();
 const http = require('http');
-const cors = require('cors'); // ← ADICIONADO
+const cors = require('cors');
 const app = require("./app");
 const connectDB = require("./config/database");
 const { initSocket } = require('./socket');
@@ -23,6 +23,14 @@ const webhookRoutes = require('./routes/webhook.routes');
 
 async function startServer() {
   await connectDB();
+
+  // =============================================
+  // 🔥 TRUST PROXY (RENDER/HEROKU/CLOUDFLARE)
+  // =============================================
+  // CRÍTICO: Sem isso, o rate limiter bloqueia TUDO!
+  // O Render usa proxy reverso, então precisamos confiar no header X-Forwarded-For
+  app.set('trust proxy', 1);
+  console.log('🔧 Trust Proxy habilitado (necessário para Render)');
 
   // =============================================
   // MIDDLEWARES DE SEGURANÇA (ANTES DE TUDO)
@@ -75,7 +83,7 @@ async function startServer() {
   server.listen(PORT, () => {
     console.log(`\n🚀 PriceMind API running on port ${PORT}`);
     console.log(`💬 WebSocket ativado para notificações em tempo real`);
-    console.log(`🔗 Webhook Kiwify: http://localhost:${PORT}/api/webhooks/kiwify`);
+    console.log(`🔗 Webhook Kiwify: ${process.env.BACKEND_URL || `http://localhost:${PORT}`}/api/webhooks/kiwify`);
     
     console.log('\n🔒 SECURITY CHECKLIST:');
     console.log('   ✅ Helmet (Security Headers)');
@@ -84,6 +92,7 @@ async function startServer() {
     console.log('   ✅ Input Sanitization (Anti-XSS)');
     console.log('   ✅ Bcrypt (Senhas Seguras)');
     console.log('   ✅ JWT (Tokens Seguros)');
+    console.log('   ✅ Trust Proxy (Render/Cloudflare)');
     
     console.log('\n🎉 Sistema pronto e seguro!\n');
   });
