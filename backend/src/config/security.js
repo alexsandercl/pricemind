@@ -132,25 +132,29 @@ const helmetMiddleware = helmet({
 });
 
 // =============================================
-// CORS CONFIGURATION
+// CORS CONFIGURATION - 🔥 CORRIGIDO PARA RENDER
 // =============================================
 const corsOptions = {
   // Origens permitidas
   origin: (origin, callback) => {
     const allowedOrigins = [
-      'http://localhost:5173',      // Dev
-      'http://localhost:3000',      // Dev alternativo
-      'https://pricemind.com.br',   // Produção
-      'https://www.pricemind.com.br' // Produção com www
-    ];
+      'http://localhost:5173',                        // Dev local
+      'http://localhost:3000',                        // Dev alternativo
+      'https://pricemind.com.br',                     // Produção (futuro)
+      'https://www.pricemind.com.br',                 // Produção com www
+      'https://pricemind-web.onrender.com',           // 🔥 Frontend Render
+      process.env.FRONTEND_URL,                       // 🔥 Variável de ambiente
+    ].filter(Boolean); // Remove undefined
 
     // Permite requests sem origin (mobile apps, Postman)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
+      console.log(`✅ CORS permitiu origem: ${origin}`);
       callback(null, true);
     } else {
       console.log(`🚨 CORS bloqueou origem: ${origin}`);
+      console.log(`✅ Origens permitidas: ${allowedOrigins.join(', ')}`);
       callback(new Error('Origem não permitida por CORS'));
     }
   },
@@ -420,44 +424,3 @@ module.exports = {
   securityChecklist,
   securityTips
 };
-
-// =============================================
-// EXEMPLO DE USO NO SERVER.JS:
-// =============================================
-/*
-const express = require('express');
-const cors = require('cors');
-const security = require('./config/security');
-
-const app = express();
-
-// 1. Helmet (headers de segurança)
-app.use(security.helmetMiddleware);
-
-// 2. CORS
-app.use(cors(security.corsOptions));
-
-// 3. JSON parsing
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// 4. Rate limiting (adicionar depois)
-// const rateLimit = require('express-rate-limit');
-// app.use(rateLimit(security.rateLimitConfig));
-
-// 5. Sanitização (adicionar depois)
-// const { sanitizeInput } = require('./middlewares/sanitizer');
-// app.use(sanitizeInput);
-
-// Suas rotas aqui...
-
-// Log de segurança na inicialização
-console.log('\n🔒 SECURITY CHECKLIST:');
-Object.entries(security.securityChecklist).forEach(([key, value]) => {
-  console.log(`   ${value} ${key}`);
-});
-
-app.listen(5000, () => {
-  console.log('🚀 Server running on port 5000');
-});
-*/
