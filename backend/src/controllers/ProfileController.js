@@ -38,7 +38,7 @@ exports.getProfile = async (req, res) => {
 
     let avatarUrl = null;
     if (profile.avatarUrl) {
-      avatarUrl = `http://localhost:5000${profile.avatarUrl}?v=${Date.now()}`;
+      avatarUrl = `${process.env.BACKEND_URL}${profile.avatarUrl}?v=${Date.now()}`
       console.log('🔍 Avatar URL:', avatarUrl);
     } else {
       console.log('⚠️ Nenhum avatar no banco');
