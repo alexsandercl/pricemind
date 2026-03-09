@@ -89,7 +89,7 @@ exports.updateProfile = async (req, res) => {
 
     let avatarUrl = null;
     if (profile.avatarUrl) {
-      avatarUrl = `http://localhost:5000${profile.avatarUrl}?v=${Date.now()}`;
+      avatarUrl: `${process.env.BACKEND_URL}${avatarPath}?v=${Date.now()}`
     }
 
     const response = {
@@ -150,7 +150,7 @@ exports.updateAvatar = async (req, res) => {
       name: req.user.name,
       email: req.user.email,
       plan: req.user.plan,
-      avatarUrl: `http://localhost:5000${avatarPath}?v=${Date.now()}`,
+      avatarUrl: `${process.env.BACKEND_URL}${profile.avatarUrl}?v=${Date.now()}`,
       isAdmin: req.user.isAdmin || false,
       role: req.user.role || "user",
     };

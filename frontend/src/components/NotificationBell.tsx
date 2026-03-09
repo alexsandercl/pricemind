@@ -31,8 +31,9 @@ export default function NotificationBell() {
 
   function setupWebSocket() {
     const token = localStorage.getItem("token");
-    const newSocket = io("http://localhost:5000", {
+        const newSocket = io(import.meta.env.VITE_WS_URL, {
       auth: { token },
+      transports: ["websocket"]
     });
 
     newSocket.on("new_notification", (notification: Notification) => {

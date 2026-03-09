@@ -212,7 +212,7 @@ export default function AnalyzeImage({ onBack }: { onBack: () => void }) {
                 <div className="bg-zinc-900/80 border border-zinc-700 rounded-xl sm:rounded-2xl p-4 sm:p-6">
                   <h3 className="font-semibold mb-4 text-base sm:text-lg">Imagem Analisada</h3>
                   <img
-                    src={`http://localhost:5000${result.imageUrl}`}
+                    src={`${import.meta.env.VITE_API_URL.replace('/api','')}${result.imageUrl}`}
                     alt="Analisada"
                     className="max-w-full rounded-xl border border-zinc-700"
                   />
