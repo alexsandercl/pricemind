@@ -4,11 +4,19 @@ const profileController = require("../controllers/ProfileController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 // Configuração do Multer para upload de avatar
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/avatars/");
+    const uploadPath = path.join(__dirname, "../../uploads/avatars");
+
+    // 🔥 GARANTE QUE A PASTA EXISTE
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -22,11 +30,14 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
     const mimetype = allowedTypes.test(file.mimetype);
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const extname = allowedTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
 
     if (mimetype && extname) {
       return cb(null, true);
     }
+
     cb(new Error("Apenas imagens são permitidas"));
   },
 });
@@ -34,7 +45,12 @@ const upload = multer({
 // Rotas de Profile
 router.get("/", authMiddleware, profileController.getProfile);
 router.put("/", authMiddleware, profileController.updateProfile);
-router.put("/avatar", authMiddleware, upload.single("avatar"), profileController.updateAvatar);
+router.put(
+  "/avatar",
+  authMiddleware,
+  upload.single("avatar"),
+  profileController.updateAvatar
+);
 router.delete("/avatar", authMiddleware, profileController.deleteAvatar);
 
 // Rotas de Preferências

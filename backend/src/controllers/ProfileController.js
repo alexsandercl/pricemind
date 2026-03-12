@@ -78,18 +78,19 @@ exports.updateProfile = async (req, res) => {
     const profile = await prisma.userProfile.upsert({
       where: { userId },
       update: { name, plan },
-      create: { 
-        userId, 
-        name, 
+      create: {
+        userId,
+        name,
         plan,
         isAdmin: req.user.isAdmin || false,
-        role: req.user.role || "user"
+        role: req.user.role || "user",
       },
     });
 
     let avatarUrl = null;
+
     if (profile.avatarUrl) {
-      avatarUrl: `${process.env.BACKEND_URL}${avatarPath}?v=${Date.now()}`
+      avatarUrl = `${process.env.BACKEND_URL}${profile.avatarUrl}?v=${Date.now()}`;
     }
 
     const response = {
